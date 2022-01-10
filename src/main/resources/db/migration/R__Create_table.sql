@@ -1,0 +1,33 @@
+CREATE TABLE IF NOT EXISTS Label(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50)   NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS Writer(
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100)  NOT NULL,
+    last_name VARCHAR(100)   NOT NULL
+);
+
+CREATE TYPE status_post AS ENUM ('ACTIVE', 'UNDER_REVIEW', 'DELETED');
+CREATE TABLE IF NOT EXISTS Post(
+    id SERIAL PRIMARY KEY,
+    content VARCHAR(100)        NOT NULL,
+    create_date TIMESTAMP DEFAULT NULL,
+    updated_date TIMESTAMP DEFAULT NULL,
+    status status_post
+);
+
+CREATE TABLE IF NOT EXISTS Post_Label(
+    label_id INT NOT NULL,
+    post_id INT NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE,
+    FOREIGN KEY (label_id) REFERENCES Label(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Writer_Post(
+    post_id INT NOT NULL,
+    writer_id INT NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE,
+    FOREIGN KEY (writer_id) REFERENCES Writer(id) ON DELETE CASCADE
+);
