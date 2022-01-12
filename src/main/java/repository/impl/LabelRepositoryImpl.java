@@ -8,46 +8,52 @@ import utils.HibernateUtil;
 import java.util.List;
 
 public class LabelRepositoryImpl implements LabelRepository {
-    private Session session;
 
     @Override
     public Label getById(Long id) {
-        Label label = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            label = session.load(Label.class, id);
-            session.getTransaction().commit();
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            session.close();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Label.class, id);
+        } catch (Exception e) {
+            return null;
         }
-        return label;
     }
 
     @Override
     public Label insert(Label label) {
-        session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(label);
-        session.getTransaction().commit();
-        session.close();
-        return label;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.save(label);
+            session.getTransaction().commit();
+            return label;
+        }
     }
 
     @Override
     public Label update(Label label) {
-        return null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.update(label);
+            session.getTransaction().commit();
+            return label;
+        }
     }
 
     @Override
     public void delete(Long id) {
-
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            Label label = session.get(Label.class, id);
+            session.delete(label);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<Label> getAll() {
-        return null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Label").list();
+        }
     }
 }
