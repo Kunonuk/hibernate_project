@@ -17,20 +17,31 @@ import java.util.Objects;
 @Table(name = "Post")
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "Content")
     private String content;
-    @Column(name = "Created")
+    @Column(name = "create_date")
     private Date created;
-    @Column(name = "updated")
+    @Column(name = "updated_date")
     private Date updated;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private PostStatus status;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "post_label",
-                joinColumns = @JoinColumn(name = "label_id"),
-                inverseJoinColumns = @JoinColumn(name = "post_id"))
+                joinColumns = @JoinColumn(name = "post_id"),
+                inverseJoinColumns = @JoinColumn(name = "label_id"))
     private List<Label> labels;
+
+    public Post(String content, Date created, Date updated, PostStatus status, List<Label> labels){
+        this.content = content;
+        this.created = created;
+        this.updated = updated;
+        this.status = status;
+        this.labels = labels;
+    }
 
     @Override
     public boolean equals(Object o) {

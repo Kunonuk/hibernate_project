@@ -1,4 +1,6 @@
 package repository;
 
-public interface WriterRepository extends GenericRepository<WriterRepository, Long> {
+import model.Writer;
+
+public interface WriterRepository extends GenericRepository<Writer, Long> {
 }
